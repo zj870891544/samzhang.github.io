@@ -227,6 +227,48 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
+// 添加触摸事件支持
+let touchStartX = 0;
+let touchStartY = 0;
+let touchEndX = 0;
+let touchEndY = 0;
+
+document.addEventListener('touchstart', (e) => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+    e.preventDefault();
+}, { passive: false });
+
+document.addEventListener('touchend', (e) => {
+    touchEndX = e.changedTouches[0].clientX;
+    touchEndY = e.changedTouches[0].clientY;
+
+    const deltaX = touchEndX - touchStartX;
+    const deltaY = touchEndY - touchStartY;
+    
+    // 确定是水平滑动还是垂直滑动
+    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+        // 水平滑动
+        if (Math.abs(deltaX) > 30) { // 添加最小滑动距离阈值
+            if (deltaX > 0) {
+                game.move('ArrowRight');
+            } else {
+                game.move('ArrowLeft');
+            }
+        }
+    } else {
+        // 垂直滑动
+        if (Math.abs(deltaY) > 30) { // 添加最小滑动距离阈值
+            if (deltaY > 0) {
+                game.move('ArrowDown');
+            } else {
+                game.move('ArrowUp');
+            }
+        }
+    }
+    e.preventDefault();
+}, { passive: false });
+
 document.getElementById('new-game').addEventListener('click', () => {
     game.init();
 }); 
